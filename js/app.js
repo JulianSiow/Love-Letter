@@ -95,8 +95,11 @@ class Guard extends Card {
         } else {
             let guardTarget = prompt('What card does your target have?');
             if(guardTarget.toLowerCase() === target.hand[0].name.toLowerCase()){
+                alert(`You found a ${guardTarget}!`)
                 target.eliminated = true;
                 target.hand.pop();
+            } else{
+                alert(`${target.name} does not have a ${guardTarget}...`)
             }
         }
     }
@@ -175,7 +178,7 @@ class Prince extends Card {
             if (deck.length === 0 || target.hand[0] === princess) {
                 target.eliminated === true;
             }
-            target.hand.splice(0, 1);
+            target.hand.pop();
         }
     }
 }
@@ -190,7 +193,7 @@ class King extends Card {
     }
     ability(target, player) {
         if (target.handmaiden === true) {
-            nextTurn();
+            //STUB 
         } else {
             target.hand.push(player.hand[0]);
             player.hand.push(target.hand[0]);
@@ -272,15 +275,19 @@ class Player {
         if (chosenCard.toLowerCase() === 'baron' || chosenCard.toLowerCase() === 'king') {
             let target = prompt('Who is your target?');
             this.playCardTargetSelf(this.findCardInHand(chosenCard), this.findTarget(target));
+            this.discard(chosenCard);
         } else if (chosenCard.toLowerCase() === 'guard' || chosenCard.toLowerCase() === 'priest' || chosenCard.toLowerCase() === 'prince') {
             let target = prompt('Who is your target?');
             this.playCardTarget(this.findCardInHand(chosenCard), this.findTarget(target));
+            this.discard(chosenCard);
         } else if (chosenCard.toLowerCase() === 'handmaiden' || chosenCard.toLowerCase() === 'countess' || chosenCard.toLowerCase() === 'princess') {
             this.playCardSelf(this.findCardInHand(chosenCard));
+            this.discard(chosenCard);
         }
     }
     playCardSelf(card) {
         card.ability(this);
+
     }
     playCardTarget(card, target) {
         card.ability(target);
@@ -301,6 +308,13 @@ class Player {
                 return players[i];
             }
             console.log(players[i]);
+        }
+    }
+    discard(chosenCard){
+        for (let i = 0; i < this.hand.length; i++) {
+            if (chosenCard === this.hand[i].name.toLowerCase()) {
+                this.hand.splice(i, 1)
+            };
         }
     }
 };
