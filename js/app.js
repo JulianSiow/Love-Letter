@@ -67,10 +67,14 @@
 //SECTION Deck Classes
 
 //Card Class
-class Card{
-    constructor(name, strength){
+class Card {
+    constructor(name, strength) {
         this.name = name;
         this.strength = strength;
+    }
+    discardMe(){
+        //FIXME 
+        //
     }
 }
 
@@ -81,11 +85,21 @@ class Card{
 //pass selected players hand through if... than function
 //if players hand is === declared card, discard players hand and set eliminated -> true and start next turn
 //if players hand is !== declared card, next turn begins
-class Guard extends Card{
-    constructor(name, strength){
+class Guard extends Card {
+    constructor(name, strength) {
         super(name, strength)
     }
-    //TODO card function
+    ability(target) {
+        if (target.handmaiden === true) {
+            nextTurn();
+        } else {
+            let guardTarget = prompt('What card does your target have?');
+            if(guardTarget.toLowerCase() === target.hand[0].name.toLowerCase()){
+                target.eliminated = true;
+                target.hand.pop();
+            }
+        }
+    }
 }
 
 //Priest
@@ -93,17 +107,17 @@ class Guard extends Card{
 //check for handmaiden === true
 //selected players card is displayed for selecting player
 //next turn begins
-class Priest extends Card{
-    constructor(name, strength){
+class Priest extends Card {
+    constructor(name, strength) {
         super(name, strength)
     }
-    // ability(target){
-    //     if(target.handmaiden === true){
-    //         nextTurn();
-    //     } else{
-    //         //TODO display target.hand
-    //     }
-    // }
+    ability(target){
+        if(target.handmaiden === true){
+            nextTurn();
+        } else{
+            alert(`${target.name}'s card is ${target.hand[0].name}`)
+        }
+    }
 }
 
 //Baron 
@@ -111,14 +125,14 @@ class Priest extends Card{
 //check for handmaiden === true
 //compare remaining hand, if selected players hand is lower than selecting players hand, selected players hand is discarded and set eliminated -> true and start next turn
 //if selecting players hand is lower, start next turn
-class Baron extends Card{
-    constructor(name, strength){
+class Baron extends Card {
+    constructor(name, strength) {
         super(name, strength);
     }
-    ability(target, player){
-        if(target.handmaiden === true){
+    ability(target, player) {
+        if (target.handmaiden === true) {
             nextTurn();
-        } else if(player.hand.strength > target.hand.strength){
+        } else if (player.hand.strength > target.hand.strength) {
             discard.push(target.hand[0]);
             target.hand.strength.splice(0, 1);
         } else {
@@ -130,11 +144,11 @@ class Baron extends Card{
 //Handmaiden
 //player sets key:value pair "handmaiden" -> true
 //next turn begins
-class Handmaiden extends Card{
-    constructor(name, strength){
+class Handmaiden extends Card {
+    constructor(name, strength) {
         super(name, strength)
     }
-    ability(player){
+    ability(player) {
         player.handmaiden = true;
     }
 }
@@ -146,16 +160,19 @@ class Handmaiden extends Card{
 //check for princess
 //if deck.length === 0, set selected player eliminated -> true
 //else, draw new card
-class Prince extends Card{
-    constructor(name, strength){
+class Prince extends Card {
+    constructor(name, strength) {
         super(name, strength)
     }
-    ability(target){
-        if(target.handmaiden === true){
+    ability(target) {
+        if (target.handmaiden === true) {
             nextTurn();
-        } else{
+        }else if(target.hand[0] === princess){//FIXME 
+            target.eliminated === true;
+            target.hand.pop();
+        } else {
             discard.push(target.hand[0]);
-            if(deck.length === 0 || target.hand[0] === princess){
+            if (deck.length === 0 || target.hand[0] === princess) {
                 target.eliminated === true;
             }
             target.hand.splice(0, 1);
@@ -167,19 +184,18 @@ class Prince extends Card{
 //promt player to choose another player
 //check for handmaiden
 //splice each hands contents to eachother
-class King extends Card{
-    constructor(name, strength){
+class King extends Card {
+    constructor(name, strength) {
         super(name, strength);
     }
-    ability(target, player){
-        if(target.handmaiden === true){
+    ability(target, player) {
+        if (target.handmaiden === true) {
             nextTurn();
         } else {
             target.hand.push(player.hand[0]);
             player.hand.push(target.hand[0]);
-            target.hand.splice(1,1);
-            player.hand.splice(1,1);
-            nextTurn();
+            target.hand.splice(1, 1);
+            player.hand.splice(1, 1);
         }
     }
 }
@@ -188,13 +204,13 @@ class King extends Card{
 //loop through hand
 //if hand[i] === King || hand[i] === prince
 //play countess, next turn begins
-class Countess extends Card{
-    constructor(name, strength){
+class Countess extends Card {
+    constructor(name, strength) {
         super(name, strength);
     }
-    ability(player){
-        for(let i=0; i<player.hand.length; i++){
-            if(player.hand[i].name === 'king' || player.hand[i].name === 'prince'){
+    ability(player) {
+        for (let i = 0; i < player.hand.length; i++) {
+            if (player.hand[i].name === 'king' || player.hand[i].name === 'prince') {
                 player.hand.unshift(discard[0]);
             } else {
                 nextTurn();
@@ -206,11 +222,11 @@ class Countess extends Card{
 //Princess
 //when played, set eliminated -> true
 //next turn begins
-class Princess extends Card{
-    constructor(name, strength){
+class Princess extends Card {
+    constructor(name, strength) {
         super(name, strength);
     }
-    ability(player){
+    ability(player) {
         player.eliminated = true;
     }
 }
@@ -240,50 +256,51 @@ let players = [];
 
 //SECTION Player Class
 class Player {
-    constructor(name, hand = [], handmaiden = false, eliminated = false){
+    constructor(name, hand = [], handmaiden = false, eliminated = false) {
         this.name = name;
         this.hand = hand;
         this.handmaiden = handmaiden;
         this.eliminated = eliminated;
     }
-    draw(){
+    draw() {
         let r = Math.floor(Math.random() * deck.length);
         this.hand.push(deck[r]);
-        deck.splice(r,1);
+        deck.splice(r, 1);
     }
-    pickPhase(){
-        let chosenCard = prompt(`Choose a card! ${this.hand[0]} or ${this.hand[1]}`);
-        if(chosenCard.toLowerCase() === 'guard' || chosenCard.toLowerCase() === 'baron' || chosenCard.toLowerCase() === 'king'){
+    pickPhase() {
+        let chosenCard = prompt(`Choose a card! ${this.hand[0].name} or ${this.hand[1].name}`);
+        if (chosenCard.toLowerCase() === 'baron' || chosenCard.toLowerCase() === 'king') {
             let target = prompt('Who is your target?');
             this.playCardTargetSelf(this.findCardInHand(chosenCard), this.findTarget(target));
-        } else if(chosenCard.toLowerCase() === 'priest' || chosenCard.toLowerCase() === 'prince'){
+        } else if (chosenCard.toLowerCase() === 'guard' || chosenCard.toLowerCase() === 'priest' || chosenCard.toLowerCase() === 'prince') {
             let target = prompt('Who is your target?');
             this.playCardTarget(this.findCardInHand(chosenCard), this.findTarget(target));
-        } else if(chosenCard.toLowerCase() === 'handmaiden' || chosenCard.toLowerCase() === 'countess' || chosenCard.toLowerCase() === 'princess'){
+        } else if (chosenCard.toLowerCase() === 'handmaiden' || chosenCard.toLowerCase() === 'countess' || chosenCard.toLowerCase() === 'princess') {
             this.playCardSelf(this.findCardInHand(chosenCard));
         }
     }
-    playCardSelf(card){
+    playCardSelf(card) {
         card.ability(this);
     }
-    playCardTarget(card, target){
+    playCardTarget(card, target) {
         card.ability(target);
     }
-    playCardTargetSelf(card, target){
+    playCardTargetSelf(card, target) {
         card.ability(target, this);
     }
-    findCardInHand(chosenCard){
-        for(let i=0; i<this.hand.length; i++){
-            if(chosenCard === this.hand[i].name){
+    findCardInHand(chosenCard) {
+        for (let i = 0; i < this.hand.length; i++) {
+            if (chosenCard === this.hand[i].name.toLowerCase()) {
                 return this.hand[i]
             };
         }
     }
-    findTarget(target){
-        for(let i=0; i<players.length; i++){
-            if(target.toLowerCase() === players[i].name){
-                return players[i]
+    findTarget(target) {
+        for (let i = 0; i < players.length; i++) {
+            if (target.toLowerCase() === players[i].name.toLowerCase()) {
+                return players[i];
             }
+            console.log(players[i]);
         }
     }
 };
@@ -296,18 +313,25 @@ const p2 = new Player('Player 2', [], false, false);
 //Game Logic
 
 const game = {
-    playerPhase(){
+    playerPhase() {
         players.push(p1, p2);
     },
-    drawPhase(){
-        for(let i=0; i<players.length; i++){
+    drawPhase() {
+        for (let i = 0; i < players.length; i++) {
             players[i].draw();
         }
     },
+    endTurn(){
+        for(let i=0; i<players.length; i++){
+            if(players[i].hand.length === 0){
+                players[i].draw();
+            }
+        }
+    }
 }
 
 //Game Start
-
+//NOTE use a loop to loop though players turns
 //Push all players into game
 game.playerPhase();
 
@@ -318,10 +342,13 @@ game.drawPhase();
 players[0].draw();
 
 //Activate Card
-console.log(players[0].hand);
-console.log(players[1].hand);
+console.log(players[0].hand)
+console.log(players[1].hand)
 players[0].pickPhase();
 
 //End Turn
+//loop through players
+//if hand.length === 0, draw
+game.endTurn();
 
 console.log(players);
