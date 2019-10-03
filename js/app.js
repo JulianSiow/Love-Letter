@@ -1,5 +1,4 @@
 //SECTION 
-//TODO 
 //Guard
 //prompt player to select another player
 //check for handmaiden === true
@@ -8,7 +7,6 @@
 //if players hand is === declared card, discard players hand and set eliminated -> true and start next turn
 //if players hand is !== declared card, next turn begins
 
-//TODO 
 //Priest
 //prompt player to select another player
 //check for handmaiden === true
@@ -48,7 +46,6 @@
 //next turn begins
 
 //SECTION 
-//TODO 
 //Turn Logic
 //check for end game 
 //reveal card
@@ -58,7 +55,6 @@
 
 
 //SECTION 
-//TODO 
 //End Game
 //During draw phase, check if more than 1 player has "eliminated" === false, if not, the last remaining player wins
 // OR if the deck.length === 0, compare hands, player with the highest strength in their hand wins
@@ -71,10 +67,6 @@ class Card {
     constructor(name, strength) {
         this.name = name;
         this.strength = strength;
-    }
-    discardMe(){
-        //FIXME 
-        //
     }
 }
 
@@ -91,13 +83,13 @@ class Guard extends Card {
     }
     ability(target) {
         if (target.handmaiden === true) {
-            nextTurn();
+            return
         } else {
             let guardTarget = prompt('What card does your target have?');
             if(guardTarget.toLowerCase() === target.hand[0].name.toLowerCase()){
                 alert(`You found a ${guardTarget}!`)
-                target.eliminated = true;
                 target.hand.pop();
+                game.eliminatePlayer(target);
             } else{
                 alert(`${target.name} does not have a ${guardTarget}...`)
             }
@@ -116,7 +108,7 @@ class Priest extends Card {
     }
     ability(target){
         if(target.handmaiden === true){
-            nextTurn();
+            return
         } else{
             alert(`${target.name}'s card is ${target.hand[0].name}`)
         }
@@ -134,12 +126,11 @@ class Baron extends Card {
     }
     ability(target, player) {
         if (target.handmaiden === true) {
-            nextTurn();
+            return
         } else if (player.hand.strength > target.hand.strength) {
-            discard.push(target.hand[0]);
-            target.hand.strength.splice(0, 1);
-        } else {
-            nextTurn();
+            discardPile.push(target.hand[0]);
+            target.hand.splice(0, 1);
+            game.eliminatePlayer(target);
         }
     }
 }
@@ -169,14 +160,16 @@ class Prince extends Card {
     }
     ability(target) {
         if (target.handmaiden === true) {
-            nextTurn();
-        }else if(target.hand[0] === princess){//FIXME 
-            target.eliminated === true;
+            //STUB 
+        }else if(target.hand[0] === princess){//TODO
+            discardPile.unshift(target.hand[0])
             target.hand.pop();
+            game.eliminatePlayer(target);
+
         } else {
-            discard.push(target.hand[0]);
+            discardPile.push(target.hand[0]);
             if (deck.length === 0 || target.hand[0] === princess) {
-                target.eliminated === true;
+                game.eliminatePlayer();
             }
             target.hand.pop();
         }
@@ -193,7 +186,7 @@ class King extends Card {
     }
     ability(target, player) {
         if (target.handmaiden === true) {
-            //STUB 
+            return
         } else {
             target.hand.push(player.hand[0]);
             player.hand.push(target.hand[0]);
@@ -214,9 +207,7 @@ class Countess extends Card {
     ability(player) {
         for (let i = 0; i < player.hand.length; i++) {
             if (player.hand[i].name === 'king' || player.hand[i].name === 'prince') {
-                player.hand.unshift(discard[0]);
-            } else {
-                nextTurn();
+                player.hand.unshift(discardPile[0]);
             }
         }
     }
@@ -254,7 +245,7 @@ const princess = new Princess('princess', 8);
 //SECTION 
 //Game Objects
 let deck = [guard1, guard2, guard3, guard4, guard5, priest1, priest2, baron1, baron2, handmaiden1, handmaiden2, prince1, prince2, king, countess, princess];
-let discard = [];
+let discardPile = [];
 let players = [];
 
 //SECTION Player Class
@@ -271,13 +262,13 @@ class Player {
         deck.splice(r, 1);
     }
     pickPhase() {
-        let chosenCard = prompt(`Choose a card! ${this.hand[0].name} or ${this.hand[1].name}`);
+        let chosenCard = prompt(`${this.name}, choose a card! ${this.hand[0].name} or ${this.hand[1].name}`);
         if (chosenCard.toLowerCase() === 'baron' || chosenCard.toLowerCase() === 'king') {
-            let target = prompt('Who is your target?');
+            let target = prompt(`${this.name}, who is your target?`);
             this.playCardTargetSelf(this.findCardInHand(chosenCard), this.findTarget(target));
             this.discard(chosenCard);
         } else if (chosenCard.toLowerCase() === 'guard' || chosenCard.toLowerCase() === 'priest' || chosenCard.toLowerCase() === 'prince') {
-            let target = prompt('Who is your target?');
+            let target = prompt(`${this.name}, who is your target?`);
             this.playCardTarget(this.findCardInHand(chosenCard), this.findTarget(target));
             this.discard(chosenCard);
         } else if (chosenCard.toLowerCase() === 'handmaiden' || chosenCard.toLowerCase() === 'countess' || chosenCard.toLowerCase() === 'princess') {
@@ -307,12 +298,12 @@ class Player {
             if (target.toLowerCase() === players[i].name.toLowerCase()) {
                 return players[i];
             }
-            console.log(players[i]);
         }
     }
     discard(chosenCard){
         for (let i = 0; i < this.hand.length; i++) {
             if (chosenCard === this.hand[i].name.toLowerCase()) {
+                discardPile.unshift(this.hand[i])
                 this.hand.splice(i, 1)
             };
         }
@@ -321,6 +312,7 @@ class Player {
 
 const p1 = new Player('Player 1', [], false, false);
 const p2 = new Player('Player 2', [], false, false);
+// const p3 = new Player('Player 3', [princess], false, false);
 
 
 //SECTION 
@@ -328,7 +320,7 @@ const p2 = new Player('Player 2', [], false, false);
 
 const game = {
     playerPhase() {
-        players.push(p1, p2);
+        players.push(p1, p2);//TODO 
     },
     drawPhase() {
         for (let i = 0; i < players.length; i++) {
@@ -341,28 +333,92 @@ const game = {
                 players[i].draw();
             }
         }
+    },
+    startLoop(){
+        while(true){
+            this.checkForWin();
+            for(i=0;i<players.length; i++){
+                players[i].handmaiden = false;
+                players[i].draw();
+                console.log(players)
+                players[i].pickPhase();
+                game.endTurn();
+                console.log(players);
+                console.log(deck.length);
+                console.log(discardPile);
+            }
+        }
+    },
+    checkForWin(){
+        if(players.length === 1){
+            alert(`${players[0].name} is the winner!`);
+            return;
+        }
+        if(deck.length === 0){
+            let winner = players[0];
+            for(let i=0; i<players.length; i++){
+                if(players[i].hand[0].strength >= winner.hand[0].strength){
+                    winner = players[i];
+                }
+            }
+            alert(`${winner.name} is the winner!`);
+            return;
+        }
+    },
+    eliminatePlayer(target){
+        for (let i = 0; i < players.length; i++){
+            if(players[i].name === target.name){
+                players.splice(i, 1);
+            }
+        }
     }
 }
 
 //Game Start
 //NOTE use a loop to loop though players turns
+
+
 //Push all players into game
 game.playerPhase();
 
 // Draw for all players
 game.drawPhase();
 
+// Start game loop
+game.startLoop();
+
+
+
 //Begin Turn
-players[0].draw();
+// players[0].draw();
 
-//Activate Card
-console.log(players[0].hand)
-console.log(players[1].hand)
-players[0].pickPhase();
+// //Activate Card
+// console.log(players[0].hand)
+// console.log(players[1].hand)
+// players[0].pickPhase();
 
-//End Turn
-//loop through players
-//if hand.length === 0, draw
-game.endTurn();
+// //End Turn
+// //loop through players
+// //if hand.length === 0, draw
+// game.endTurn();
 
-console.log(players);
+// console.log(players);
+
+//End Game SECTION 
+//if players.length === 1
+//${players[0]} is the Winner!!!!
+// if(players.length === 1){
+//     console.log(`${players[0]} is the winner!`);
+// }
+// if(deck.length === 0){
+//     let winner = players[0];
+//     for(let i=0; i<players.length; i++){
+//         if(players[i].hand[0].strength >= winner.hand[0].strength){
+//             winner = players[i];
+//         }
+//     }
+//     console.log(`${winner} is the winner!`);
+// }
+//if deck.length === 0
+//compare card strength
+//player with highest card strength is the winner 
