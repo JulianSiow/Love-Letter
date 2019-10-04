@@ -86,11 +86,11 @@ class Guard extends Card {
             return
         } else {
             let guardTarget = prompt('What card does your target have?');
-            if(guardTarget.toLowerCase() === target.hand[0].name.toLowerCase()){
+            if (guardTarget.toLowerCase() === target.hand[0].name.toLowerCase()) {
                 alert(`You found a ${guardTarget}!`)
                 target.hand.pop();
                 game.eliminatePlayer(target);
-            } else{
+            } else {
                 alert(`${target.name} does not have a ${guardTarget}...`)
             }
         }
@@ -106,10 +106,10 @@ class Priest extends Card {
     constructor(name, strength) {
         super(name, strength)
     }
-    ability(target){
-        if(target.handmaiden === true){
+    ability(target) {
+        if (target.handmaiden === true) {
             return
-        } else{
+        } else {
             alert(`${target.name}'s card is ${target.hand[0].name}`)
         }
     }
@@ -161,7 +161,7 @@ class Prince extends Card {
     ability(target) {
         if (target.handmaiden === true) {
             //STUB 
-        }else if(target.hand[0] === princess){//TODO
+        } else if (target.hand[0] === princess) {//TODO
             discardPile.unshift(target.hand[0])
             target.hand.pop();
             game.eliminatePlayer(target);
@@ -247,6 +247,7 @@ const princess = new Princess('princess', 8);
 let deck = [guard1, guard2, guard3, guard4, guard5, priest1, priest2, baron1, baron2, handmaiden1, handmaiden2, prince1, prince2, king, countess, princess];
 let discardPile = [];
 let players = [];
+let i = 0;
 
 //SECTION Player Class
 class Player {
@@ -261,60 +262,85 @@ class Player {
         this.hand.push(deck[r]);
         deck.splice(r, 1);
     }
-    setImg(){
-        if(this.hand[0].name === 'guard'){
+    setImg() {
+        if (this.hand[0].name === 'guard') {
             $('#card1').attr('src', "./images/guard.jpg");
-        }else if(this.hand[0].name === 'priest'){
+            $('#card1').attr('class', 'guard')
+        } else if (this.hand[0].name === 'priest') {
             $('#card1').attr('src', "./images/priest.jpg");
-        }else if(this.hand[0].name === 'baron'){
+            $('#card1').attr('class', 'priest')
+        } else if (this.hand[0].name === 'baron') {
             $('#card1').attr('src', "./images/baron.jpg");
-        }else if(this.hand[0].name === 'handmaiden'){
+            $('#card1').attr('class', 'baron')
+        } else if (this.hand[0].name === 'handmaiden') {
             $('#card1').attr('src', "./images/handmaid.jpg");
-        }else if(this.hand[0].name === 'prince'){
+            $('#card1').attr('class', 'handmaid')
+        } else if (this.hand[0].name === 'prince') {
             $('#card1').attr('src', "./images/prince.jpg");
-        }else if(this.hand[0].name === 'king'){
+            $('#card1').attr('class', 'prince')
+        } else if (this.hand[0].name === 'king') {
             $('#card1').attr('src', "./images/king.jpg");
-        }else if(this.hand[0].name === 'countess'){
+            $('#card1').attr('class', 'king')
+        } else if (this.hand[0].name === 'countess') {
             $('#card1').attr('src', "./images/countess.jpg");
-        }else if(this.hand[0].name === 'princess'){
+            $('#card1').attr('class', 'countess')
+        } else if (this.hand[0].name === 'princess') {
             $('#card1').attr('src', "./images/princess.jpg");
+            $('#card1').attr('class', 'princess')
         };
-        if(this.hand[1].name === 'guard'){
+        if (this.hand[1].name === 'guard') {
             $('#card2').attr('src', "./images/guard.jpg");
-        }else if(this.hand[1].name === 'priest'){
+            $('#card2').attr('class', 'guard')
+        } else if (this.hand[1].name === 'priest') {
             $('#card2').attr('src', "./images/priest.jpg");
-        }else if(this.hand[1].name === 'baron'){
+            $('#card2').attr('class', 'priest')
+        } else if (this.hand[1].name === 'baron') {
             $('#card2').attr('src', "./images/baron.jpg");
-        }else if(this.hand[1].name === 'handmaiden'){
+            $('#card2').attr('class', 'baron')
+        } else if (this.hand[1].name === 'handmaiden') {
             $('#card2').attr('src', "./images/handmaid.jpg");
-        }else if(this.hand[1].name === 'prince'){
+            $('#card2').attr('class', 'handmaid')
+        } else if (this.hand[1].name === 'prince') {
             $('#card2').attr('src', "./images/prince.jpg");
-        }else if(this.hand[1].name === 'king'){
+            $('#card2').attr('class', 'prince')
+        } else if (this.hand[1].name === 'king') {
             $('#card2').attr('src', "./images/king.jpg");
-        }else if(this.hand[1].name === 'countess'){
+            $('#card2').attr('class', 'king')
+        } else if (this.hand[1].name === 'countess') {
             $('#card2').attr('src', "./images/countess.jpg");
-        }else if(this.hand[1].name === 'princess'){
+            $('#card2').attr('class', 'countess')
+        } else if (this.hand[1].name === 'princess') {
             $('#card2').attr('src', "./images/princess.jpg");
+            $('#card2').attr('class', 'princess')
         };
     }
-    resetImg(){
+    resetImg() {
         $('#card1').attr('src', "./images/eda1d_61421.png");
         $('#card2').attr('src', "./images/eda1d_61421.png");
     }
     pickPhase() {
-        let chosenCard = prompt(`${this.name}, choose a card! ${this.hand[0].name} or ${this.hand[1].name}`);
-        if (chosenCard.toLowerCase() === 'baron' || chosenCard.toLowerCase() === 'king') {
-            let target = prompt(`${this.name}, who is your target?`);
-            this.playCardTargetSelf(this.findCardInHand(chosenCard), this.findTarget(target));
-            this.discard(chosenCard);
-        } else if (chosenCard.toLowerCase() === 'guard' || chosenCard.toLowerCase() === 'priest' || chosenCard.toLowerCase() === 'prince') {
-            let target = prompt(`${this.name}, who is your target?`);
-            this.playCardTarget(this.findCardInHand(chosenCard), this.findTarget(target));
-            this.discard(chosenCard);
-        } else if (chosenCard.toLowerCase() === 'handmaiden' || chosenCard.toLowerCase() === 'countess' || chosenCard.toLowerCase() === 'princess') {
-            this.playCardSelf(this.findCardInHand(chosenCard));
-            this.discard(chosenCard);
-        }
+        $('img').on('click', (e) => {
+            console.log(this);
+            let chosenCard = $(e.target);
+            if(chosenCard.is('.baron')||chosenCard.is('.king')){
+                let target = prompt(`${this.name}, who is your target?`);
+                chosenCard.attr('class') = chosenCard;
+                this.playCardTargetSelf(this.findCardInHand(chosenCard), this.findTarget(target));
+                this.discard(chosenCard);
+            }else if(chosenCard.is('.guard')||chosenCard.is('.priest')||chosenCard.is('.prince')){
+                let target = prompt(`${this.name}, who is your target?`);
+                chosenCard.attr('class') = chosenCard;
+                this.playCardTarget(this.findCardInHand(chosenCard), this.findTarget(target));
+                this.discard(chosenCard);
+            }else if(chosenCard.is('.handmaiden')||chosenCard.is('.countess')||chosenCard.is('.princess')){
+                chosenCard.attr('class') = chosenCard;
+                this.playCardSelf(this.findCardInHand(chosenCard));
+                this.discard(chosenCard);
+            }
+            players[i].resetImg();
+            game.endTurn();
+        })
+        
     }
     playCardSelf(card) {
         card.ability(this);
@@ -340,7 +366,7 @@ class Player {
             }
         }
     }
-    discard(chosenCard){
+    discard(chosenCard) {
         for (let i = 0; i < this.hand.length; i++) {
             if (chosenCard === this.hand[i].name.toLowerCase()) {
                 discardPile.unshift(this.hand[i])
@@ -348,7 +374,7 @@ class Player {
             };
         }
     }
-    readyCheck(){
+    readyCheck() {
         alert(`${this.name}, are you ready?`);
     }
 };
@@ -370,40 +396,35 @@ const game = {
             players[i].draw();
         }
     },
-    endTurn(){
-        for(let i=0; i<players.length; i++){
-            if(players[i].hand.length === 0){
+    endTurn() {
+        for (let i = 0; i < players.length; i++) {
+            if (players[i].hand.length === 0) {
                 players[i].draw();
             }
         }
-    },
-    startLoop(){
-        while(true){
-            this.checkForWin();
-            for(i=0;i<players.length; i++){
-                players[i].handmaiden = false;
-                players[i].draw();
-                players[i].readyCheck();
-                players[i].setImg();
-                console.log(players)
-                players[i].pickPhase();
-                players[i].resetImg();
-                game.endTurn();
-                console.log(players);
-                console.log(deck.length);
-                console.log(discardPile);
-            }
+        if(i === players.length){
+            i=0
         }
+        this.startLoop();
     },
-    checkForWin(){
-        if(players.length === 1){
+    startLoop() {
+        this.checkForWin();
+        players[i].handmaiden = false;
+        players[i].draw();
+        players[i].readyCheck();
+        players[i].setImg();
+        players[i].pickPhase();
+        i += 1;
+    },
+    checkForWin() {
+        if (players.length === 1) {
             alert(`${players[0].name} is the winner!`);
             return;
         }
-        if(deck.length === 0){
+        if (deck.length === 0) {
             let winner = players[0];
-            for(let i=0; i<players.length; i++){
-                if(players[i].hand[0].strength >= winner.hand[0].strength){
+            for (let i = 0; i < players.length; i++) {
+                if (players[i].hand[0].strength >= winner.hand[0].strength) {
                     winner = players[i];
                 }
             }
@@ -411,9 +432,9 @@ const game = {
             return;
         }
     },
-    eliminatePlayer(target){
-        for (let i = 0; i < players.length; i++){
-            if(players[i].name === target.name){
+    eliminatePlayer(target) {
+        for (let i = 0; i < players.length; i++) {
+            if (players[i].name === target.name) {
                 players.splice(i, 1);
             }
         }
@@ -433,7 +454,9 @@ game.drawPhase();
 // Start game loop
 game.startLoop();
 
-
+// ##################################################################
+//SECTION -----------------------ICEBOX------------------------------
+//###################################################################
 
 //Begin Turn
 // players[0].draw();
@@ -469,11 +492,6 @@ game.startLoop();
 //compare card strength
 //player with highest card strength is the winner 
 
-
-// ##################################################################
-//SECTION ---------------------SANDBOX------------------------------
-//###################################################################
-
 // const imgChange = () => {
 //     $('#card1').attr('src', `players[0].hand[0].image`);
 //     $('#card2').attr('src', `players[0].hand[1].image`);
@@ -488,8 +506,8 @@ game.startLoop();
 
 // for(let i=0; i<hand.length; i++){
 //     $('#card1').attr('src', `${hand[i].image}`);
-    
-    
+
+
 // }
 // $('#card1').attr('src', `${hand[i].image}`);
 // $('#card2').attr('src', `${hand[i].image}`);
@@ -530,4 +548,106 @@ game.startLoop();
 //     }else if(hand[2] === 'princess'){
 //         $('#card2').attr('src', "./images/princess.jpg");
 //     }
+// }
+
+// $('#card1').on('click', ()=>{
+//     console.log('click');
+//     if ($('#card1'). === 'baron' || chosenCard.toLowerCase() === 'king') {
+//         let target = prompt(`${this.name}, who is your target?`);
+//         this.playCardTargetSelf(this.findCardInHand(chosenCard), this.findTarget(target));
+//         this.discard(chosenCard);
+//     } else if (chosenCard.toLowerCase() === 'guard' || chosenCard.toLowerCase() === 'priest' || chosenCard.toLowerCase() === 'prince') {
+//         let target = prompt(`${this.name}, who is your target?`);
+//         this.playCardTarget(this.findCardInHand(chosenCard), this.findTarget(target));
+//         this.discard(chosenCard);
+//     } else if (chosenCard.toLowerCase() === 'handmaiden' || chosenCard.toLowerCase() === 'countess' || chosenCard.toLowerCase() === 'princess') {
+//         this.playCardSelf(this.findCardInHand(chosenCard));
+//         this.discard(chosenCard);
+//     }
+// });
+
+// $('img').on('click', function(e){
+//     let chosenCard = $(e.target);
+//     if(chosenCard.is('.baron')||chosenCard.is('.king')){
+//         let target = prompt(`${this.name}, who is your target?`);
+//         this.playCardTargetSelf(this.findCardInHand(chosenCard), this.findTarget(target));
+//         this.discard(chosenCard);
+//     }else if(chosenCard.is('.guard')||chosenCard.is('.priest')||chosenCard.is('.prince')){
+//         let target = prompt(`${this.name}, who is your target?`);
+//         this.playCardTarget(this.findCardInHand(chosenCard), this.findTarget(target));
+//         this.discard(chosenCard);
+//     }else if(chosenCard.is('.handmaiden')||chosenCard.is('.countess')||chosenCard.is('.princess')){
+//         this.playCardSelf(this.findCardInHand(chosenCard));
+//         this.discard(chosenCard);
+//     }
+// })
+
+//old choosing function
+// console.log($('#card1').is('.guard', '.'))
+        // console.log($('#card2'))
+        // let chosenCard = prompt(`${this.name}, choose a card! ${this.hand[0].name} or ${this.hand[1].name}`);
+        // if (chosenCard.toLowerCase() === 'baron' || chosenCard.toLowerCase() === 'king') {
+        //     let target = prompt(`${this.name}, who is your target?`);
+        //     this.playCardTargetSelf(this.findCardInHand(chosenCard), this.findTarget(target));
+        //     this.discard(chosenCard);
+        // } else if (chosenCard.toLowerCase() === 'guard' || chosenCard.toLowerCase() === 'priest' || chosenCard.toLowerCase() === 'prince') {
+        //     let target = prompt(`${this.name}, who is your target?`);
+        //     this.playCardTarget(this.findCardInHand(chosenCard), this.findTarget(target));
+        //     this.discard(chosenCard);
+        // } else if (chosenCard.toLowerCase() === 'handmaiden' || chosenCard.toLowerCase() === 'countess' || chosenCard.toLowerCase() === 'princess') {
+        //     this.playCardSelf(this.findCardInHand(chosenCard));
+        //     this.discard(chosenCard);
+        // }
+
+//old gameplay loop
+// while (true) {
+//     this.checkForWin();
+//     for (i = 0; i < players.length; i++) {
+//         players[i].handmaiden = false;
+//         players[i].draw();
+//         players[i].readyCheck();
+//         players[i].setImg();
+//         console.log(players)
+//         players[i].pickPhase();
+//         players[i].resetImg();
+//         game.endTurn();
+//         console.log(players);
+//         console.log(deck.length);
+//         console.log(discardPile);
+//     }
+// }
+//SECTION 
+
+// startLoop(){
+//     while(true){
+//         this.checkForWin();
+//         for(i=0;i<players.length; i++){
+//             //phase 1
+//             players[i].handmaiden = false;
+//             players[i].draw();
+//             players[i].readyCheck();
+
+//             //phase 2
+//             players[i].setImg();
+//             players[i].pickPhase();
+//             players[i].resetImg();
+
+
+//             game.endTurn();
+//         }
+//     }
+// }
+
+//nest setImg in ready check
+//create a function in endTurn to start the next turn
+//create a function in pickPhase to continue the turn
+
+//button to begin your turn
+//button to end your turn
+
+
+
+
+// if(i === players.length){
+//     i=0
 // }

@@ -40,6 +40,17 @@ footer{
 .allCards{
     height: 419px;
     width: 300px;
+    max-width: 300px;
+}
+#card1{
+    height: 419px;
+    width: 300px;
+    max-width: 300px;
+}
+#card2{
+    height: 419px;
+    width: 300px;
+    max-width: 300px;
 }
 
 
