@@ -124,7 +124,7 @@ class Baron extends Card {
     constructor(name, strength) {
         super(name, strength);
     }
-    ability(target, player) {
+    ability(target, player) {//FIXME not eliminating player
         if (target.handmaiden === true) {
             return
         } else if (player.hand.strength > target.hand.strength) {
@@ -204,7 +204,7 @@ class Countess extends Card {
     constructor(name, strength) {
         super(name, strength);
     }
-    ability(player) {
+    ability(player) {//FIXME 
         for (let i = 0; i < player.hand.length; i++) {
             if (player.hand[i].name === 'king' || player.hand[i].name === 'prince') {
                 player.hand.unshift(discardPile[0]);
@@ -261,6 +261,46 @@ class Player {
         this.hand.push(deck[r]);
         deck.splice(r, 1);
     }
+    setImg(){
+        if(this.hand[0].name === 'guard'){
+            $('#card1').attr('src', "./images/guard.jpg");
+        }else if(this.hand[0].name === 'priest'){
+            $('#card1').attr('src', "./images/priest.jpg");
+        }else if(this.hand[0].name === 'baron'){
+            $('#card1').attr('src', "./images/baron.jpg");
+        }else if(this.hand[0].name === 'handmaiden'){
+            $('#card1').attr('src', "./images/handmaid.jpg");
+        }else if(this.hand[0].name === 'prince'){
+            $('#card1').attr('src', "./images/prince.jpg");
+        }else if(this.hand[0].name === 'king'){
+            $('#card1').attr('src', "./images/king.jpg");
+        }else if(this.hand[0].name === 'countess'){
+            $('#card1').attr('src', "./images/countess.jpg");
+        }else if(this.hand[0].name === 'princess'){
+            $('#card1').attr('src', "./images/princess.jpg");
+        };
+        if(this.hand[1].name === 'guard'){
+            $('#card2').attr('src', "./images/guard.jpg");
+        }else if(this.hand[1].name === 'priest'){
+            $('#card2').attr('src', "./images/priest.jpg");
+        }else if(this.hand[1].name === 'baron'){
+            $('#card2').attr('src', "./images/baron.jpg");
+        }else if(this.hand[1].name === 'handmaiden'){
+            $('#card2').attr('src', "./images/handmaid.jpg");
+        }else if(this.hand[1].name === 'prince'){
+            $('#card2').attr('src', "./images/prince.jpg");
+        }else if(this.hand[1].name === 'king'){
+            $('#card2').attr('src', "./images/king.jpg");
+        }else if(this.hand[1].name === 'countess'){
+            $('#card2').attr('src', "./images/countess.jpg");
+        }else if(this.hand[1].name === 'princess'){
+            $('#card2').attr('src', "./images/princess.jpg");
+        };
+    }
+    resetImg(){
+        $('#card1').attr('src', "./images/eda1d_61421.png");
+        $('#card2').attr('src', "./images/eda1d_61421.png");
+    }
     pickPhase() {
         let chosenCard = prompt(`${this.name}, choose a card! ${this.hand[0].name} or ${this.hand[1].name}`);
         if (chosenCard.toLowerCase() === 'baron' || chosenCard.toLowerCase() === 'king') {
@@ -308,6 +348,9 @@ class Player {
             };
         }
     }
+    readyCheck(){
+        alert(`${this.name}, are you ready?`);
+    }
 };
 
 const p1 = new Player('Player 1', [], false, false);
@@ -340,8 +383,11 @@ const game = {
             for(i=0;i<players.length; i++){
                 players[i].handmaiden = false;
                 players[i].draw();
+                players[i].readyCheck();
+                players[i].setImg();
                 console.log(players)
                 players[i].pickPhase();
+                players[i].resetImg();
                 game.endTurn();
                 console.log(players);
                 console.log(deck.length);
@@ -371,7 +417,7 @@ const game = {
                 players.splice(i, 1);
             }
         }
-    }
+    },
 }
 
 //Game Start
@@ -422,3 +468,66 @@ game.startLoop();
 //if deck.length === 0
 //compare card strength
 //player with highest card strength is the winner 
+
+
+// ##################################################################
+//SECTION ---------------------SANDBOX------------------------------
+//###################################################################
+
+// const imgChange = () => {
+//     $('#card1').attr('src', `players[0].hand[0].image`);
+//     $('#card2').attr('src', `players[0].hand[1].image`);
+//     console.log(players[0].hand[0].image);
+//     console.log("in img change function");
+// };
+
+// $('#card1').on('click', ()=>{
+//     console.log('click')
+//     imgChange();
+// });
+
+// for(let i=0; i<hand.length; i++){
+//     $('#card1').attr('src', `${hand[i].image}`);
+    
+    
+// }
+// $('#card1').attr('src', `${hand[i].image}`);
+// $('#card2').attr('src', `${hand[i].image}`);
+
+// for(let i=0; i<this.hand.length; i++){
+//     if(hand[0] === 'guard'){
+//         $('#card1').attr('src', "./images/guard.jpg");
+//     }else if(hand[0] === 'priest'){
+//         $('#card1').attr('src', "./images/priest.jpg");
+//     }else if(hand[0] === 'baron'){
+//         $('#card1').attr('src', "./images/baron.jpg");
+//     }else if(hand[0] === 'handmaiden'){
+//         $('#card1').attr('src', "./images/handmaid.jpg");
+//     }else if(hand[0] === 'prince'){
+//         $('#card1').attr('src', "./images/prince.jpg");
+//     }else if(hand[0] === 'king'){
+//         $('#card1').attr('src', "./images/king.jpg");
+//     }else if(hand[0] === 'countess'){
+//         $('#card1').attr('src', "./images/countess.jpg");
+//     }else if(hand[0] === 'princess'){
+//         $('#card1').attr('src', "./images/princess.jpg");
+//     }
+
+//     if(hand[2] === 'guard'){
+//         $('#card2').attr('src', "./images/guard.jpg");
+//     }else if(hand[2] === 'priest'){
+//         $('#card2').attr('src', "./images/priest.jpg");
+//     }else if(hand[2] === 'baron'){
+//         $('#card2').attr('src', "./images/baron.jpg");
+//     }else if(hand[2] === 'handmaiden'){
+//         $('#card2').attr('src', "./images/handmaid.jpg");
+//     }else if(hand[2] === 'prince'){
+//         $('#card2').attr('src', "./images/prince.jpg");
+//     }else if(hand[2] === 'king'){
+//         $('#card2').attr('src', "./images/king.jpg");
+//     }else if(hand[2] === 'countess'){
+//         $('#card2').attr('src', "./images/countess.jpg");
+//     }else if(hand[2] === 'princess'){
+//         $('#card2').attr('src', "./images/princess.jpg");
+//     }
+// }
