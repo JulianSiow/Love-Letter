@@ -324,29 +324,30 @@ class Player {
             let chosenCard = $(e.target);
             if(chosenCard.is('.baron')||chosenCard.is('.king')){
                 let target = prompt(`${this.name}, who is your target?`);
-                chosenCard.attr('class') = chosenCard;
+                chosenCard = chosenCard.attr('class');
+                console.log(chosenCard);
                 this.playCardTargetSelf(this.findCardInHand(chosenCard), this.findTarget(target));
                 this.discard(chosenCard);
             }else if(chosenCard.is('.guard')||chosenCard.is('.priest')||chosenCard.is('.prince')){
                 let target = prompt(`${this.name}, who is your target?`);
-                chosenCard.attr('class') = chosenCard;
+                chosenCard = chosenCard.attr('class');
                 this.playCardTarget(this.findCardInHand(chosenCard), this.findTarget(target));
                 this.discard(chosenCard);
             }else if(chosenCard.is('.handmaiden')||chosenCard.is('.countess')||chosenCard.is('.princess')){
-                chosenCard.attr('class') = chosenCard;
+                chosenCard = chosenCard.attr('class');
                 this.playCardSelf(this.findCardInHand(chosenCard));
                 this.discard(chosenCard);
             }
             players[i].resetImg();
             game.endTurn();
-        })
-        
+        })   
     }
     playCardSelf(card) {
         card.ability(this);
 
     }
     playCardTarget(card, target) {
+        console.log(card);
         card.ability(target);
     }
     playCardTargetSelf(card, target) {
@@ -402,8 +403,9 @@ const game = {
                 players[i].draw();
             }
         }
+        i += 1;
         if(i === players.length){
-            i=0
+            i=0;
         }
         this.startLoop();
     },
@@ -414,7 +416,6 @@ const game = {
         players[i].readyCheck();
         players[i].setImg();
         players[i].pickPhase();
-        i += 1;
     },
     checkForWin() {
         if (players.length === 1) {
