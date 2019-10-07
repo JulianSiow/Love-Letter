@@ -247,15 +247,14 @@ const princess = new Princess('princess', 8);
 let deck = [guard1, guard2, guard3, guard4, guard5, priest1, priest2, baron1, baron2, handmaiden1, handmaiden2, prince1, prince2, king, countess, princess];
 let discardPile = [];
 let players = [];
-let i = 0;
+let z = 0;
 
 //SECTION Player Class
 class Player {
-    constructor(name, hand = [], handmaiden = false, eliminated = false) {
+    constructor(name, hand = [], handmaiden = false) {
         this.name = name;
         this.hand = hand;
         this.handmaiden = handmaiden;
-        this.eliminated = eliminated;
     }
     draw() {
         let r = Math.floor(Math.random() * deck.length);
@@ -319,26 +318,27 @@ class Player {
         $('#card2').attr('src', "./images/eda1d_61421.png");
     }
     pickPhase() {
-        $('img').on('click', (e) => {
-            console.log(this);
+        let that = this;
+        $('img').on('click', function(e){
+            console.log(that);
             let chosenCard = $(e.target);
             if(chosenCard.is('.baron')||chosenCard.is('.king')){
-                let target = prompt(`${this.name}, who is your target?`);
+                let target = prompt(`${that.name}, who is your target?`);
                 chosenCard = chosenCard.attr('class');
                 console.log(chosenCard);
-                this.playCardTargetSelf(this.findCardInHand(chosenCard), this.findTarget(target));
-                this.discard(chosenCard);
+                that.playCardTargetSelf(that.findCardInHand(chosenCard), that.findTarget(target));
+                that.discard(chosenCard);
             }else if(chosenCard.is('.guard')||chosenCard.is('.priest')||chosenCard.is('.prince')){
-                let target = prompt(`${this.name}, who is your target?`);
+                let target = prompt(`${that.name}, who is your target?`);
                 chosenCard = chosenCard.attr('class');
-                this.playCardTarget(this.findCardInHand(chosenCard), this.findTarget(target));
-                this.discard(chosenCard);
+                that.playCardTarget(that.findCardInHand(chosenCard), that.findTarget(target));
+                that.discard(chosenCard);
             }else if(chosenCard.is('.handmaiden')||chosenCard.is('.countess')||chosenCard.is('.princess')){
                 chosenCard = chosenCard.attr('class');
-                this.playCardSelf(this.findCardInHand(chosenCard));
-                this.discard(chosenCard);
+                that.playCardSelf(that.findCardInHand(chosenCard));
+                that.discard(chosenCard);
             }
-            players[i].resetImg();
+            players[z].resetImg();
             game.endTurn();
         })   
     }
@@ -380,9 +380,9 @@ class Player {
     }
 };
 
-const p1 = new Player('Player 1', [], false, false);
-const p2 = new Player('Player 2', [], false, false);
-// const p3 = new Player('Player 3', [princess], false, false);
+const p1 = new Player('Player 1', [], false);
+const p2 = new Player('Player 2', [], false);
+// const p3 = new Player('Player 3', [], false);
 
 
 //SECTION 
@@ -403,19 +403,19 @@ const game = {
                 players[i].draw();
             }
         }
-        i += 1;
-        if(i === players.length){
-            i=0;
-        }
-        this.startLoop();
+        // z += 1;
+        // if(z === players.length){
+        //     z=0;
+        // }
+        // this.startLoop();
     },
     startLoop() {
         this.checkForWin();
-        players[i].handmaiden = false;
-        players[i].draw();
-        players[i].readyCheck();
-        players[i].setImg();
-        players[i].pickPhase();
+        players[z].handmaiden = false;
+        players[z].draw();
+        players[z].readyCheck();
+        players[z].setImg();
+        players[z].pickPhase();
     },
     checkForWin() {
         if (players.length === 1) {
@@ -454,6 +454,15 @@ game.drawPhase();
 
 // Start game loop
 game.startLoop();
+
+
+$('.next-turn').on('click', ()=>{
+    z += 1;
+    if(z === players.length){
+        z=0;
+    }
+    game.startLoop();
+})
 
 // ##################################################################
 //SECTION -----------------------ICEBOX------------------------------
@@ -618,7 +627,7 @@ game.startLoop();
 //     }
 // }
 //SECTION 
-
+//REVIEW 
 // startLoop(){
 //     while(true){
 //         this.checkForWin();
