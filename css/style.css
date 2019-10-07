@@ -4,7 +4,7 @@
     box-sizing: border-box;
 }
 body {
-    background-image: url("/home/julian/sei/projects/Project0/images/wallhaven-452wg9.jpg" );
+    background-image: url("../images/wallhaven-452wg9.jpg" );
 }
 footer{
     position: absolute;

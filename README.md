@@ -1,5 +1,3 @@
-PROPOSAL:
-
 Based on card game Love Letter.  
 
 SECTION Rule Set:
