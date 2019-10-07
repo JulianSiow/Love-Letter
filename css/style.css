@@ -48,14 +48,20 @@ footer{
     width: 300px;
     max-width: 300px;
 }
+#card1:hover{
+    transform: scale(1.2);
+    transition-duration: 0.5s;
+}
 #card2{
     height: 419px;
     width: 300px;
     max-width: 300px;
 }
+#card2:hover{
+    transform: scale(1.2);
+    transition-duration: 0.5s;
+}
 .start-turn{
     margin: 30px;
 }
-.name-input{
-    
-}
+

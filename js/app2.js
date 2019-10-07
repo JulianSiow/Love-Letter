@@ -268,7 +268,7 @@ class Player {
     }
     playCardSelf(card) {
         console.log(card);
-        card.ability(this);
+        card.ability(players[z]);
     }
     playCardTarget(card, target) {
         console.log(card);
@@ -276,7 +276,7 @@ class Player {
     }
     playCardTargetSelf(card, target) {
         console.log(card)
-        card.ability(target, this);
+        card.ability(target, players[z]);
     }
     findCardInHand(chosenCard) {
         for (let i = 0; i < this.hand.length; i++) {
@@ -337,8 +337,8 @@ game.playerPhase();
 
 $('.start-turn').on('click', function(){
     console.log('start turn function');
-    players[z].handmaiden = false;
     game.checkForWin();
+    players[z].handmaiden = false;
     game.drawPhase();
     players[z].draw();
     players[z].setImg();
@@ -349,4 +349,15 @@ $('.next-turn').on('click', function(){
     console.log('next turn function');
 })
 
-$('.add-player').on('click')
+// $('.add-player').on('click', ()=>{
+//     $('.space').remove('.add-player');
+//     $('.space').append(`
+//     <div class="name-input player2-name">
+//             <input type="text" placeholder="Please put in your name!">
+//             <input type="submit">
+//     </div>
+//     <div>
+//             <button class="add-player" type="button">Add Player</button>
+//      </div>
+//     `)
+// })
